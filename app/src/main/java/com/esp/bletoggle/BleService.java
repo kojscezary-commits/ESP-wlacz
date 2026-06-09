@@ -176,9 +176,13 @@ public class BleService extends Service {
             // Rozłącz po chwili i wróć do stanu gotowości
             handler.postDelayed(() -> {
                 disconnectGatt();
-                setBusy(false);
                 updateNotification("Gotowy – naciśnij aby przełączyć LED");
             }, 800);
+            // Przycisk Przełącz wraca dopiero po 2.2s
+            handler.postDelayed(() -> {
+                setBusy(false);
+                updateNotification("Gotowy – naciśnij aby przełączyć LED");
+            }, 2200);
         }
     };
 
@@ -256,3 +260,4 @@ public class BleService extends Service {
         if (nm != null) nm.notify(NOTIF_ID, buildNotification(status));
     }
 }
+
