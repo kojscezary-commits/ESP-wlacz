@@ -229,16 +229,22 @@ public class BleService extends Service {
         PendingIntent piStop = PendingIntent.getService(this, 2, stopIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        return new NotificationCompat.Builder(this, CHANNEL_ID)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("ESP LED")
                 .setContentText(status)
                 .setSmallIcon(android.R.drawable.ic_menu_send)
                 .setContentIntent(piOpen)
                 .setOngoing(true)
-                .setSilent(true)
-                .addAction(android.R.drawable.ic_media_play, "🔁 Przełącz", piToggle)
-                .addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", piStop)
-                .build();
+                .setSilent(true);
+
+        // Przycisk Przełącz tylko gdy nie jest busy
+        if (!isBusy) {
+            builder.addAction(android.R.drawable.ic_media_play, "🔁 Przełącz", piToggle);
+        }
+
+        builder.addAction(android.R.drawable.ic_menu_close_clear_cancel, "Stop", piStop);
+
+        return builder.build();
     }
 
     private void startForegroundWithNotification(String status) {
